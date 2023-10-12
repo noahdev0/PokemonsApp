@@ -1,9 +1,12 @@
-import  { useContext } from "react";
+import { useContext } from "react";
 import PokemonRow from "./PokemonRow";
 import PokemonContext from "../PokemonContext";
 
 export default function Table() {
-  const { pokemon, filter, selectedPokemonSet } = useContext(PokemonContext);
+  const {
+    state: { pokemon, filter },
+    dispatch,
+  } = useContext(PokemonContext);
   return (
     <table>
       <tbody>
@@ -16,7 +19,9 @@ export default function Table() {
             <PokemonRow
               key={pokemon.id}
               pokemon={pokemon}
-              onClick={(pokemon) => selectedPokemonSet(pokemon)}
+              onClick={(pokemon) =>
+                dispatch({ type: "SET_SELECTED_POKEMON", payload: pokemon })
+              }
             />
           ))}
       </tbody>

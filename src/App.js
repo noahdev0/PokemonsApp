@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import PokemonInfo from "./components/PokemonInfo";
 import PokemonFilter from "./components/PokemonFilter";
 import Table from "./components/Table";
@@ -11,19 +11,49 @@ import {
   Input,
 } from "./components/styles";
 import "./App.css";
-
+const pokemonReducer = (state, action) => {
+  switch (action.type) {
+    case "SET_FILTER":
+      return {
+        ...state,
+        filter: action.payload,
+      };
+    case "SET_POKEMON":
+      return {
+        ...state,
+        pokemon: action.payload,
+      };
+    case "SET_SELECTED_POKEMON":
+      return {
+        ...state,
+        selectedPokemon: action.payload,
+      };
+    default:
+      throw new Error("Invalid action type");
+  }
+};
 function App() {
   const [filter, filterSet] = useState("");
   const [pokemon, pokemonSet] = useState(null);
   const [selectedPokemon, selectedPokemonSet] = useState(null);
+  const [state, dispatch] = useReducer(pokemonReducer, {
+    filter: "",
+    pokemon: [],
+    selectedPokemon: null,
+  });
 
   useEffect(() => {
     fetch("/pokemon.json")
       .then((resp) => resp.json())
-      .then((data) => pokemonSet(data));
+      .then((data) =>
+        dispatch({
+          type: "SET_POKEMON",
+          payload: data,
+        })
+      );
   }, []);
 
-  if (!pokemon) {
+  if (!state.pokemon) {
     return <div>Loading data</div>;
   }
 
@@ -36,6 +66,8 @@ function App() {
         filterSet,
         pokemonSet,
         selectedPokemonSet,
+        state,
+        dispatch,
       }}>
       <PageContainer>
         <Title>Pokemon Search</Title>
