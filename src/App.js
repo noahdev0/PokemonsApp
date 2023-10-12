@@ -8,7 +8,6 @@ import {
   Title,
   PageContainer,
   TwoColumnLayout,
-  Input,
 } from "./components/styles";
 import "./App.css";
 const pokemonReducer = (state, action) => {
@@ -45,10 +44,10 @@ function App() {
   useEffect(() => {
     fetch("/pokemon.json")
       .then((resp) => resp.json())
-      .then((data) =>
+      .then((payload) =>
         dispatch({
           type: "SET_POKEMON",
-          payload: data,
+          payload,
         })
       );
   }, []);
@@ -76,7 +75,7 @@ function App() {
             <PokemonFilter />
             <Table />
           </div>
-          {selectedPokemon && <PokemonInfo />}
+           <PokemonInfo />
         </TwoColumnLayout>
       </PageContainer>
     </PokemonContext.Provider>
